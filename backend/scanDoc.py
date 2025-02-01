@@ -1,16 +1,8 @@
-from fastapi import FastAPI
-from langchain_community.llms import HuggingFaceEndpoint
-from langchain.chains import LLMChain, SimpleSequentialChain, SequentialChain
-from langchain.prompts import PromptTemplate
-from fastapi.middleware.cors import CORSMiddleware
-#from dotenv import load_dotenv
-#from key import huggingface_access_key
-import os
+
 from langchain.prompts import FewShotPromptTemplate
 from PyPDF2 import PdfReader
-import os
-
 import re
+from genai import input_resume
 
 
 # os.environ["HUGGINGFACEHUB_API_TOKEN"] = huggingface_access_key
@@ -59,7 +51,7 @@ def extract_sections(text):
         "professional experience",
         "projects",
     }
-    print(text)
+
     text_list = re.split(r'\n', text)
     curr_key = "others"
     for line in text_list:
@@ -80,11 +72,13 @@ def read_root(query):
 
 
 def main():
-    pdf_text = scan_pdf("Atharva Chiplunkar_CareerFair_Resume.pdf")
+    pdf_text = scan_pdf("documents/Atharva Chiplunkar_Resume.pdf")
     sections = extract_sections(pdf_text)
     # for section, content in sections.items():
     #     print(f"--- {section} ---\n{content}\n")
-    
+    #print(sections['professional experience'])
+    answers = input_resume(sections)
+    print(answers['text'])
 
 if __name__ == "__main__":
     main()
